@@ -1,0 +1,27 @@
+{
+  "name": "gamblr",
+  "version": "1.0.0",
+  "description": "Bovada bet history",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brandonros/gamblr.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brandonros/gamblr/issues"
+  },
+  "homepage": "https://github.com/brandonros/gamblr#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "lowdb": "^1.0.0",
+    "moment": "^2.19.3",
+    "object-hash": "^1.2.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  }
+}
