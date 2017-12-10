@@ -9,7 +9,7 @@ module.exports = async function() {
   var adapter = new FileSync('db.json');
   var db = low(adapter);
 
-  db.defaults({ bets: [], changes: [] })
+  db.defaults({ bets: [], priceChanges: [], handicapChanges: [] })
     .write();
 
   var bets = await getBets();
@@ -34,10 +34,23 @@ module.exports = async function() {
         .write();
     } else {
       if (dbBet.price !== bet.price) {
-        console.log(new Date(), 'Updating', betHash, dbBet, bet);
+        console.log(new Date(), 'Updating price', betHash, dbBet, bet);
 
-        db.get('changes')
+        db.get('priceChanges')
           .push({ betHash: betHash, oldPrice: dbBet.price, newPrice: bet.price, originallyScraped: dbBet.scraped, changed: moment().format() })
+          .write();
+
+        db.get('bets')
+          .find({ id: betHash })
+          .assign({ price: bet.price, scraped: moment().format() })
+          .write();
+      }
+
+      if (dbBet.handicap !== bet.handicap) {
+        console.log(new Date(), 'Updating handicap', betHash, dbBet, bet);
+
+        db.get('handicapChanges')
+          .push({ betHash: betHash, oldHandicap: dbBet.handicap, newHandicap: bet.handicap, originallyScraped: dbBet.scraped, changed: moment().format() })
           .write();
 
         db.get('bets')

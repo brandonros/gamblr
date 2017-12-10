@@ -38,6 +38,7 @@ module.exports = async function() {
           startTime: moment.unix(game.startTime / 1000).format(),
           bet: bet.description,
           outcome: outcome.description,
+          handicap: outcome.price.handicap,
           price: outcome.price.american
         });
       });
