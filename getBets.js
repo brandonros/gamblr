@@ -10,6 +10,8 @@ module.exports = async function() {
       }
   };
 
+  console.log(new Date(), 'Getting  bets...');
+
   var $ = await rp(options);
 
   var scripts = $('script');

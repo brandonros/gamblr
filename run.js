@@ -5,7 +5,7 @@ var hash = require('object-hash');
 
 var getBets = require('./getBets');
 
-(async function() {
+module.exports = async function() {
   var adapter = new FileSync('db.json');
   var db = low(adapter);
 
@@ -37,7 +37,7 @@ var getBets = require('./getBets');
         console.log(new Date(), 'Updating', betHash, dbBet, bet);
 
         db.get('changes')
-          .push({ betHash: betHash, oldPrice: dbBet.price, newPrice: bet.price, changed: moment().format() })
+          .push({ betHash: betHash, oldPrice: dbBet.price, newPrice: bet.price, originallyScraped: dbBet.scraped, changed: moment().format() })
           .write();
 
         db.get('bets')
@@ -47,5 +47,6 @@ var getBets = require('./getBets');
       }
     }
   });
-})();
 
+  console.log(new Date(), 'Proccesed bets...');
+};
