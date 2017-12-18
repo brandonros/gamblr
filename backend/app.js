@@ -1,11 +1,11 @@
 var cron = require('cron');
 
-var processBets = require('./processBets.js');
+var processLines = require('./processLines.js');
 
 new cron.CronJob({
-  cronTime: '*/5 * * * *',
+  cronTime: '* * * * *',
   onTick: function() {
-    processBets();
+    processLines();
   },
   start: true,
   timeZone: 'America/New_York'

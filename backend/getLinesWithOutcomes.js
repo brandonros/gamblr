@@ -10,7 +10,7 @@ module.exports = async function() {
       }
   };
 
-  console.log(new Date(), 'Getting  bets...');
+  console.log(new Date(), 'Getting lines...');
 
   var $ = await rp(options);
 
@@ -28,15 +28,15 @@ module.exports = async function() {
 
   var games = JSON.parse(matchingScriptHtml.replace('var swc_market_lists = ', '')).items[0].itemList.items;
 
-  var bets = [];
+  var lines = [];
 
   games.forEach(function(game) {
-    game.displayGroups[0].itemList.forEach(function(bet) {
-      bet.outcomes.forEach(function(outcome) {
-        bets.push({
+    game.displayGroups[0].itemList.forEach(function(line) {
+      line.outcomes.forEach(function(outcome) {
+        lines.push({
           game: game.description,
           startTime: moment.unix(game.startTime / 1000).format(),
-          bet: bet.description,
+          betType: line.description,
           outcome: outcome.description,
           handicap: outcome.price.handicap,
           price: outcome.price.american
@@ -45,5 +45,5 @@ module.exports = async function() {
     });
   });
 
-  return bets;
+  return lines;
 };
