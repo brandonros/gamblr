@@ -12,3 +12,7 @@ new cron.CronJob({
 });
 
 console.log(new Date(), 'Initiated...');
+
+process.on('unhandledRejection', function(err) {
+  console.error(err.stack);
+});

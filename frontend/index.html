@@ -4,16 +4,13 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.18/c3.min.css">
 
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-      <style type="text/css">
-        .chart-container {
-          height: 720px;
-        }
-      </style>
   </head>
 
   <body>
-    <div class="row"></div>
+    <div class="container">
+      <select class="form-control" id="line">
+      </select>
+    </div>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment.min.js"></script>
@@ -53,8 +50,6 @@
       }
 
       function generateHandicapChangeChart(line, handicaps) {
-        console.log(handicaps);
-
         var handicapColumn = ['handicap'];
         var xColumn = ['x'];
 
@@ -88,6 +83,23 @@
       (async function() {
         var db = await (await fetch('/backend/db.json')).json();
 
+        db.lines.sort(function(a, b) {
+          var aLine = `${a.startTime} - ${a.game} - ${a.betType} - ${a.outcome}`.trim().trimLeft();
+          var bLine = `${b.startTime} - ${b.game} - ${b.betType} - ${b.outcome}`.trim().trimLeft();
+
+          if (a < b) {
+            return -1;
+          }
+
+          if (a > b) {
+            return 1;
+          }
+
+          return 0;
+        });
+
+        var html = '<option value=""></option>';
+
         db.lines.forEach(function(line) {
           var prices = db.prices.filter(function(price) {
             return line.id === price.lineHash;
@@ -97,7 +109,33 @@
             return line.id === handicap.lineHash;
           });
 
-          $('.row').append(`<div class="col-sm-2 chart-container">
+          html += `<option value="${line.id}">${line.startTime} - ${line.game} - ${line.betType} - ${line.outcome} (${prices.length} price changes, ${handicaps.length} handicap changes)</option>`;
+        });
+
+        $('#line').html(html);
+
+        $('#line').on('change', function() {
+          $('.chart').remove();
+
+          var lineId = $('#line').val();
+
+          if (!lineId) {
+            return;
+          }
+
+          var line = db.lines.find(function(line) {
+            return line.id === lineId;
+          });
+
+          var prices = db.prices.filter(function(price) {
+            return line.id === price.lineHash;
+          });
+
+          var handicaps =  db.handicaps.filter(function(handicap) {
+            return line.id === handicap.lineHash;
+          });
+
+          $('.container').append(`<div class="chart">
               <strong>${line.game}<br>${line.betType} ${line.outcome}<br>${line.startTime}</strong>
               <div id="price-chart-${line.id}"></div>
               <div id="handicap-chart-${line.id}"></div>
@@ -108,7 +146,7 @@
           if (handicaps.length) {
             generateHandicapChangeChart(line, handicaps);
           }
-        });  
+        }); 
       })();
     </script>
   </body>

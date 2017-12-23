@@ -33,6 +33,10 @@ module.exports = async function() {
   games.forEach(function(game) {
     game.displayGroups[0].itemList.forEach(function(line) {
       line.outcomes.forEach(function(outcome) {
+        if (!outcome.price) {
+          return;
+        }
+
         lines.push({
           game: game.description,
           startTime: moment.unix(game.startTime / 1000).format(),
